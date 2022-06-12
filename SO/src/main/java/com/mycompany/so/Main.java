@@ -13,15 +13,15 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //asignar procesos al cpu, actualizar las prioridades, actualizar tiempos, chequear bloqueos
-//what you want to do.
-            }
-        }, 0, 1000);//wait 0 ms before doing the action and do it evry 1000ms (1second)
+        Proceso a = new Proceso(8, "yo", "nombre", 3, 9, new int[]{4,1});
+        Proceso b = new Proceso(9, "yo2", "nombre3", 6, 7,new int[]{3,2});
+        Proceso c = new Proceso(10, "yo3", "nombre4", 8, 5,new int[]{2,3});
+        EvenDriven scheduler = new EvenDriven();
+        CPU cpu = new CPU(1);
+        SO so = new SO(cpu, scheduler);
+        so.crearProceso(a);
+        so.crearProceso(b);
+        so.crearProceso(c);
     }
     
 }
