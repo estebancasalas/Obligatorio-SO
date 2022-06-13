@@ -13,15 +13,16 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        Proceso a = new Proceso(8, "yo", "nombre", 3, 9, new int[]{4,1});
-        Proceso b = new Proceso(9, "yo2", "nombre3", 6, 7,new int[]{3,2});
-        Proceso c = new Proceso(10, "yo3", "nombre4", 8, 5,new int[]{2,3});
+        Proceso a = new Proceso(8, "yo", "nombre", 3, 1, new int[]{4,1});
+        Proceso b = new Proceso(9, "yo2", "nombre3", 6, 1,new int[]{3,2});
+        Proceso c = new Proceso(10, "yo3", "nombre4", 8, 1,new int[]{2,3});
         EvenDriven scheduler = new EvenDriven();
         CPU cpu = new CPU(1);
         SO so = new SO(cpu, scheduler);
         so.crearProceso(a);
         so.crearProceso(b);
-        so.crearProceso(c);
+        so.crearProceso(c);        
+        so.ejecutar();
     }
     
 }

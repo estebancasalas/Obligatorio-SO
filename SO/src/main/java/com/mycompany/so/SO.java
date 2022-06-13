@@ -12,9 +12,9 @@ import java.util.*;
 
 public class SO {
     private CPU cpu;
-    private IPlanificador planificador;
+    public IPlanificador planificador;
     private PriorityQueue<Proceso> colaListos;
-    private Proceso[] ejecucion;
+    private ArrayList<Proceso> ejecucion;
     public LinkedList<Proceso> bloqueados;
     public LinkedList<Proceso> finalizados;
     public boolean prendido;
@@ -25,7 +25,7 @@ public class SO {
         this.cpu = cpu;
         this.planificador = planificador;
         this.colaListos = new PriorityQueue<Proceso>();
-        this.ejecucion = new Proceso[cpu.cores.length];
+        this.ejecucion = new ArrayList<Proceso>(cpu.cores.length);
         this.bloqueados = new LinkedList<Proceso>();
         this.finalizados = new LinkedList<Proceso>();
         this.prendido = true;
@@ -37,32 +37,44 @@ public class SO {
         this.cpu = cpu;
         this.planificador = planificador;
         this.colaListos = new PriorityQueue<Proceso>();
-        this.ejecucion = new Proceso[cpu.cores.length];
+        this.ejecucion = new ArrayList<Proceso>(cpu.cores.length);
         this.bloqueados = new LinkedList<Proceso>();
         this.finalizados = new LinkedList<Proceso>();
         this.prendido = true;
     }
 
     public void ejecutar() {
-        Timer timer = new Timer(true);
+        Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                while (prendido) {
-                    planificador.planificar(colaListos, ejecucion, bloqueados, finalizados);
-                }
+                Object[] arr = planificador.planificar(colaListos, ejecucion, bloqueados, finalizados);
+                PriorityQueue<Proceso> cl = (PriorityQueue<Proceso>) arr[0];
+                colaListos = cl;
+                ArrayList<Proceso> ej = (ArrayList<Proceso>) arr[1];
+                ejecucion = ej;
+                LinkedList<Proceso> b = (LinkedList<Proceso>) arr[2];
+                bloqueados = b;
+                LinkedList<Proceso> f = (LinkedList<Proceso>) arr[3];
+                finalizados = f;
                 for (Proceso p : colaListos) {
-                    System.out.println(p.id);
+                    System.out.print(p.id);
                 }
+                System.out.println();
                 for (Proceso p : ejecucion) {
-                    System.out.println(p.id);
+                    if (p != null){
+                        System.out.print(p.id);
+                    }
                 }
+                System.out.println();
                 for (Proceso p : bloqueados) {
-                    System.out.println(p.id);
+                    System.out.print(p.id);
                 }
+                System.out.println();
                 for (Proceso p : finalizados) {
-                    System.out.println(p.id);
+                    System.out.print(p.id);
                 }
+                System.out.println();
             }
         }, 0, 1000);
     }

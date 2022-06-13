@@ -6,7 +6,8 @@ package com.mycompany.so;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * Se asignan prioridades a los procesos, inicialmente se determinan por la
@@ -23,33 +24,72 @@ public class EvenDriven implements IPlanificador {
     }
 
     @Override
-    public void planificar(PriorityQueue<Proceso> colaListos, Proceso[] ejecucion, LinkedList<Proceso> bloqueados, LinkedList<Proceso> finalizados) {
-        actualizarPrioridades(colaListos, ejecucion, bloqueados);
+    public Object[] planificar(PriorityQueue<Proceso> colaListos, ArrayList<Proceso> ejecucion, LinkedList<Proceso> bloqueados, LinkedList<Proceso> finalizados) {
+        Object[] arr = new Collection[4];
 
+        actualizarPrioridades(colaListos, ejecucion, bloqueados);
+        if (ejecucion.size() == 0) {
+            ejecucion.add(null);
+        }
         //EJECUCION: 
         //chequear si finalizo un proceso
-        for (Proceso p : ejecucion) {
-            if (ejecucion[0].duracionTotalEjecucion == 0) { //ver despues para mas de un cpu.
-                finalizados.add(ejecucion[0]);
-                ejecucion[0] = (Proceso) colaListos.poll();
-            }
-            else {  //Modificar tiempos de ejecucion.
-                p.duracionTotalEjecucion--;
+        for (int i = 0; i < ejecucion.size(); i++) {
+            Proceso p = ejecucion.get(i);
+            if (p != null) {
+                if (ejecucion.get(0).duracionTotalEjecucion == 0) { //ver despues para mas de un cpu.
+                    finalizados.add(ejecucion.get(0));
+                    ejecucion.set(0, (Proceso) colaListos.poll());
+
+                } else if (p.duracionTotalEjecucion % p.intervaloBloqueo[0] == 0) {
+                    bloqueados.add(p);
+                    ejecucion.set(0, (Proceso) colaListos.poll()); //ver caso de mas de 1 proceso(se necesita indice)
+
+                } else if (colaListos.peek() != null) {
+                    if (p.prioridad < colaListos.peek().prioridad) {
+                        colaListos.add(p);
+                        ejecucion.set(0, colaListos.poll()); //ver caso de mas de 1 proceso(se necesita indice)
+                    }
+                }
+                p.duracionTotalEjecucion--;//Modificar tiempos de ejecucion.
+
+            } else {
+                ejecucion.set(0, colaListos.poll()); //ver caso de mas de 1 proceso(se necesita indice)
             }
         }
-        
+        /*
         for (Proceso p : ejecucion) {
-            if (p.duracionTotalEjecucion % p.intervaloBloqueo[0] == 0) {
-                bloqueados.add(p);
-                ejecucion[0] = colaListos.poll(); //ver caso de mas de 1 proceso(se necesita indice)
+            if (p != null) {
+                if (ejecucion.get(0).duracionTotalEjecucion == 0) { //ver despues para mas de un cpu.
+                    finalizados.add(ejecucion.get(0));
+                    ejecucion.add(0, (Proceso) colaListos.poll());
+                } else {  //Modificar tiempos de ejecucion.
+                    p.duracionTotalEjecucion--;
+                }
+            }
+        }
+
+        for (Proceso p : ejecucion) {
+            if (p != null) {
+                if (p.duracionTotalEjecucion % p.intervaloBloqueo[0] == 0) {
+                    bloqueados.add(p);
+                    ejecucion.add(0, (Proceso) colaListos.poll()); //ver caso de mas de 1 proceso(se necesita indice)
+                }
             }
         }
         for (Proceso p : ejecucion) {
-            if (p.prioridad < colaListos.peek().prioridad) {
-                colaListos.add(p);
-                ejecucion[0] = colaListos.poll(); //ver caso de mas de 1 proceso(se necesita indice)
+            if (p != null) {
+                if (p.prioridad < colaListos.peek().prioridad) {
+                    colaListos.add(p);
+                    ejecucion.add(0, colaListos.poll()); //ver caso de mas de 1 proceso(se necesita indice)
+                }
             }
         }
+        for (Proceso p : ejecucion) {
+            if (p == null) {
+                ejecucion.add(0, colaListos.poll()); //ver caso de mas de 1 proceso(se necesita indice)
+            }
+        }
+*/
         //BLOQUEADOS
         for (Proceso p : bloqueados) {
             if (p.tiempoBloqueo == 0) {
@@ -60,18 +100,32 @@ public class EvenDriven implements IPlanificador {
                 p.tiempoBloqueo--;
             }
         }
+         
+        arr[0] = colaListos;
+        arr[1] = ejecucion;
+        arr[2] = bloqueados;
+        arr[3] = finalizados;
+        return arr;
     }
 
     @Override
-    public void actualizarPrioridades(PriorityQueue<Proceso> colaListos, Proceso[] ejecucion, LinkedList<Proceso> bloqueados) {
+    public void actualizarPrioridades(PriorityQueue<Proceso> colaListos, ArrayList<Proceso> ejecucion, LinkedList<Proceso> bloqueados) {
         for (Proceso p : colaListos) {
-            p.prioridad++;
+
+            if (p != null) {
+                p.prioridad++;
+            }
         }
+
         for (Proceso p : ejecucion) {
-            p.prioridad--;
+            if (p != null) {
+                p.prioridad--;
+            }
         }
         for (Proceso p : bloqueados) {
-            p.prioridad += 2;
+            if (p != null) {
+                p.prioridad += 2;
+            }
         }
     }
 
