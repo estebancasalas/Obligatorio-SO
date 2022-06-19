@@ -40,7 +40,8 @@ public class EvenDriven implements IPlanificador {
                     finalizados.add(ejecucion.get(0));
                     ejecucion.set(0, (Proceso) colaListos.poll());
 
-                } else if (p.duracionTotalEjecucion % p.intervaloBloqueo[0] == 0) {
+                } else if (p.tiempoBloqueo == p.intervaloBloqueo[0]) {
+                    p.tiempoBloqueo = p.intervaloBloqueo[1];
                     bloqueados.add(p);
                     ejecucion.set(0, (Proceso) colaListos.poll()); //ver caso de mas de 1 proceso(se necesita indice)
 
@@ -51,6 +52,7 @@ public class EvenDriven implements IPlanificador {
                     }
                 }
                 p.duracionTotalEjecucion--;//Modificar tiempos de ejecucion.
+                p.tiempoBloqueo++;
 
             } else {
                 ejecucion.set(0, colaListos.poll()); //ver caso de mas de 1 proceso(se necesita indice)
@@ -93,7 +95,6 @@ public class EvenDriven implements IPlanificador {
         //BLOQUEADOS
         for (Proceso p : bloqueados) {
             if (p.tiempoBloqueo == 0) {
-                p.tiempoBloqueo = p.intervaloBloqueo[1];
                 colaListos.add(p);
                 bloqueados.remove(p);
             } else {
@@ -113,18 +114,18 @@ public class EvenDriven implements IPlanificador {
         for (Proceso p : colaListos) {
 
             if (p != null) {
-                p.prioridad++;
+                p.prioridad = Integer.min(99, p.prioridad + 5);
             }
         }
 
         for (Proceso p : ejecucion) {
             if (p != null) {
-                p.prioridad--;
+                p.prioridad = Integer.max(0, p.prioridad - 5);
             }
         }
         for (Proceso p : bloqueados) {
             if (p != null) {
-                p.prioridad += 2;
+                p.prioridad = Integer.min(99, p.prioridad + 10);
             }
         }
     }

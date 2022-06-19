@@ -22,17 +22,27 @@ public class Proceso implements Comparable {
         this.id = id;
         this.user = user;
         this.nombre = nombre;
-        this.prioridad = prioridad;
+        this.prioridad = Integer.min(99, prioridad);
         this.duracionTotalEjecucion = duracionTotalEjecucion;
         this.intervaloBloqueo = intervaloBloqueo;
-        this.tiempoBloqueo = intervaloBloqueo[1];
+        this.tiempoBloqueo = 0;
 
     }
 
     @Override
     public int compareTo(Object o) {
         Proceso p = (Proceso) o;
-        return this.prioridad.compareTo(p.prioridad);
+        return -this.prioridad.compareTo(p.prioridad);
 
     }
+     @Override
+     public boolean equals(Object o){
+         Proceso p = (Proceso) o;
+         if (this.id == p.id){
+             return true;
+         } else {
+             return false;
+         }
+         
+     }
 }
