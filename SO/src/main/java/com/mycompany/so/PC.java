@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -27,9 +28,10 @@ public class PC extends javax.swing.JFrame {
         initComponents();
 
         String[] headers = {"id", "nombre", "prioridad"};
+        String[] headersBloqueados = {"id", "nombre", "prioridad", "Bloqueado por:"};
         String[][] data = {};
         DefaultTableModel modelListos = new DefaultTableModel(data, headers);
-        DefaultTableModel modelBloqueados = new DefaultTableModel(data, headers);
+        DefaultTableModel modelBloqueados = new DefaultTableModel(data, headersBloqueados);
         DefaultTableModel modelFinalizados = new DefaultTableModel(data, headers);
         DefaultTableModel modelEjecucion = new DefaultTableModel(data, headers);
         jTableListos.setModel(modelListos);
@@ -73,12 +75,12 @@ public class PC extends javax.swing.JFrame {
         model2.setRowCount(0);
         for (Proceso b : so.bloqueados) {
             if (b != null) {
-                String[] row = {Integer.toString(b.id), b.nombre, b.prioridad.toString()};
+                String[] row = {Integer.toString(b.id), b.nombre, b.prioridad.toString(), "E/S"};
                 model2.addRow(row);
             }
         }
-        for (Proceso bm : so.bloqueadosManual){
-            String[] row = {Integer.toString(bm.id), bm.nombre, bm.prioridad.toString()};
+        for (Proceso bm : so.bloqueadosManual) {
+            String[] row = {Integer.toString(bm.id), bm.nombre, bm.prioridad.toString(), "Usuario"};
             model2.addRow(row);
         }
         jTableBloqueados.setModel(model2);
@@ -319,9 +321,7 @@ public class PC extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jButtonCrear, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(49, 49, 49)
                                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(63, 63, 63)
@@ -339,7 +339,8 @@ public class PC extends javax.swing.JFrame {
                                         .addGap(29, 29, 29)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jTextFieldBloqueo, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jTextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                            .addComponent(jTextFieldNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jButtonCrear, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
@@ -367,13 +368,6 @@ public class PC extends javax.swing.JFrame {
                                         .addComponent(jTextFieldTBloqueo, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(231, 231, 231)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(156, 156, 156)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(121, 121, 121)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -382,7 +376,15 @@ public class PC extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(86, 86, 86)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(286, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(123, 123, 123)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(250, 250, 250)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(92, 92, 92))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -393,9 +395,9 @@ public class PC extends javax.swing.JFrame {
                     .addComponent(jButtonStop))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
+                        .addGap(61, 61, 61)
                         .addComponent(jLabel8)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34)
                         .addComponent(jLabel11))
@@ -488,14 +490,47 @@ public class PC extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldNombreActionPerformed
 
     private void jButtonCrearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCrearActionPerformed
-        int id = Integer.parseInt(jTextFieldId.getText());
+        int id = 0;
+        int prioridad = 0;
+        int duracionTotalEjecucion = 0;
+        int tiempoBloqueo = 0;
+        int duracionBloqueo = 0;
+        try {
+            id = Integer.parseInt(jTextFieldId.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "El id debe ser un entero");
+            return;
+        }
         String user = jTextFieldUsuario.getText();
         String nombre = jTextFieldNombre.getText();
-        int prioridad = Integer.parseInt(jTextFieldPrioridad.getText());
-        int duracionTotalEjecucion = Integer.parseInt(jTextFieldDuracion.getText());
-        int tiempoBloqueo = Integer.parseInt(jTextFieldBloqueo.getText());
-        int duracionBloqueo = Integer.parseInt(jTextFieldTBloqueo.getText());
-        Proceso p = new Proceso(id, user, nombre, prioridad, duracionTotalEjecucion, new int[]{tiempoBloqueo,duracionBloqueo});
+        try {
+            prioridad = Integer.parseInt(jTextFieldPrioridad.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "La prioridad debe ser un entero");
+            return;
+        }
+        try {
+            duracionTotalEjecucion = Integer.parseInt(jTextFieldDuracion.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "La duracion debe ser un entero");
+            return;
+        }
+
+        try {
+            tiempoBloqueo = Integer.parseInt(jTextFieldBloqueo.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "El tiempo en que se bloquea debe ser un entero");
+            return;
+        }
+
+        try {
+            duracionBloqueo = Integer.parseInt(jTextFieldTBloqueo.getText());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "La duracion del bloqueo debe ser un entero");
+            return;
+        }
+
+        Proceso p = new Proceso(id, user, nombre, prioridad, duracionTotalEjecucion, new int[]{tiempoBloqueo, duracionBloqueo});
         so.crearProceso(p);
     }//GEN-LAST:event_jButtonCrearActionPerformed
 
